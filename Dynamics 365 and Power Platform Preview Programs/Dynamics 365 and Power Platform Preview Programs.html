@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dynamics 365 and Power Platform Preview Programs</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Dark Mode Toggle - top right position -->
+  <div class="theme-switch-wrapper">
+    <span>Dark Mode</span>
+    <label class="theme-switch">
+      <input type="checkbox" id="theme-toggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <div id="sidebar">
+    <h2>Groups</h2>
+    <div id="group-nav">
+      <p id="nav-loading">Loading groups...</p>
+    </div>
+  </div>
+  
+  <!-- Main Content Area -->
+  <div id="main-content">
+    <!-- Header section with title and search - will be sticky -->
+    <div class="sticky-header">
+      <h1 id="page-title">Dynamics 365 and Power Platform Preview Programs</h1>
+      
+      <!-- Search Box (moved from sidebar) -->
+      <div class="search-container">
+        <div class="search-input-group">
+          <input type="text" id="search-input" placeholder="Search messages...">
+          <button id="search-button">Search</button>
+        </div>
+        <div class="search-results">
+          <span id="search-count"></span>
+          <div class="search-nav">
+            <button id="prev-result" disabled>&lt; Prev</button>
+            <button id="next-result" disabled>Next &gt;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="message-container">
+      <div id="message-board">
+        <p id="loading">Please select a group to view messages</p>
+      </div>
+    </div>
+    
+    <!-- Back to Top Button -->
+    <button id="back-to-top" title="Back to Top">↑</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

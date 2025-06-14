@@ -1,0 +1,55 @@
+{
+  "body": {
+    "name": "varAllReferences",
+    "value": [
+      {
+        "type": "user",
+        "id": 2000000000000001,
+        "name": "sampleuser1",
+        "state": "active",
+        "full_name": "Sample User One",
+        "job_title": "Sample Job Title",
+        "network_id": 123456,
+        "mugshot_url": "https://www.example.com/mugshot/sampleuser1.png",
+        "mugshot_redirect_url": "https://www.example.com/mugshot/redirect/sampleuser1.png",
+        "mugshot_url_template": "https://www.example.com/mugshot/sampleuser1_{width}x{height}.png",
+        "mugshot_redirect_url_template": "https://www.example.com/mugshot/redirect/sampleuser1_{width}x{height}.png",
+        "url": "https://www.example.com/api/v1/users/1000000000000001",
+        "web_url": "https://www.example.com/group/users/1000000000000001",
+        "activated_at": "2025/01/01 10:00:00 +0000",
+        "auto_activated": false,
+        "stats": {
+          "following": 10,
+          "followers": 5,
+          "updates": 2
+        },
+        "email": "sampleuser1@example.com",
+        "aad_guest": false
+      },
+      {
+        "type": "user",
+        "id": 2000000000000002,
+        "name": "sampleuser2",
+        "state": "active",
+        "full_name": "Sample User Two",
+        "job_title": "Another Job Title",
+        "network_id": 123456,
+        "mugshot_url": "https://www.example.com/mugshot/sampleuser2.png",
+        "mugshot_redirect_url": "https://www.example.com/mugshot/redirect/sampleuser2.png",
+        "mugshot_url_template": "https://www.example.com/mugshot/sampleuser2_{width}x{height}.png",
+        "mugshot_redirect_url_template": "https://www.example.com/mugshot/redirect/sampleuser2_{width}x{height}.png",
+        "url": "https://www.example.com/api/v1/users/1000000000000002",
+        "web_url": "https://www.example.com/group/users/1000000000000002",
+        "activated_at": "2025/01/02 11:00:00 +0000",
+        "auto_activated": false,
+        "stats": {
+          "following": 3,
+          "followers": 8,
+          "updates": 1
+        },
+        "email": "sampleuser2@example.com",
+        "aad_guest": false
+      }
+    ]
+  }
+}

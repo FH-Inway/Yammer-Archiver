@@ -1,0 +1,79 @@
+{
+  "body": {
+    "name": "varAllMessages",
+    "value": [
+      {
+        "id": 1000000000000001,
+        "sender_id": 2000000000000001,
+        "delegate_id": null,
+        "replied_to_id": null,
+        "created_at": "2025/01/01 10:00:00 +0000",
+        "published_at": "2025/01/01 10:00:00 +0000",
+        "network_id": 300000,
+        "message_type": "update",
+        "sender_type": "user",
+        "url": "https://www.example.com/api/v1/messages/1000000000000001",
+        "web_url": "https://www.example.com/group/messages/1000000000000001",
+        "group_id": 40000001,
+        "body": {
+          "parsed": "This is a sample update message for demonstration purposes.",
+          "plain": "This is a sample update message for demonstration purposes.",
+          "rich": "This is a sample update message for demonstration purposes."
+        },
+        "thread_id": 1000000000000001,
+        "client_type": "Web",
+        "client_url": "https://www.example.com/",
+        "system_message": false,
+        "direct_message": false,
+        "chat_client_sequence": null,
+        "language": "en",
+        "notified_user_ids": [],
+        "privacy": "public",
+        "attachments": [],
+        "liked_by": {
+          "count": 0,
+          "names": []
+        },
+        "supplemental_reply": false,
+        "content_excerpt": "This is a sample update message for demonstration purposes.",
+        "group_created_id": 40000001
+      },
+      {
+        "id": 1000000000000002,
+        "sender_id": 2000000000000002,
+        "delegate_id": null,
+        "replied_to_id": null,
+        "created_at": "2025/01/02 11:00:00 +0000",
+        "published_at": "2025/01/02 11:00:00 +0000",
+        "network_id": 300000,
+        "message_type": "question",
+        "sender_type": "user",
+        "url": "https://www.example.com/api/v1/messages/1000000000000002",
+        "web_url": "https://www.example.com/group/messages/1000000000000002",
+        "group_id": 40000001,
+        "body": {
+          "parsed": "How can I use the sample API to retrieve messages?",
+          "plain": "How can I use the sample API to retrieve messages?",
+          "rich": "How can I use the sample API to retrieve messages?"
+        },
+        "thread_id": 1000000000000002,
+        "client_type": "Web",
+        "client_url": "https://www.example.com/",
+        "system_message": false,
+        "direct_message": false,
+        "chat_client_sequence": null,
+        "language": "en",
+        "notified_user_ids": [],
+        "privacy": "public",
+        "attachments": [],
+        "liked_by": {
+          "count": 1,
+          "names": ["Sample User"]
+        },
+        "supplemental_reply": false,
+        "content_excerpt": "How can I use the sample API to retrieve messages?",
+        "group_created_id": 40000001
+      }
+    ]
+  }
+}

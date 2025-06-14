@@ -1,0 +1,370 @@
+{
+  "name": "a59fac87-4d84-4754-ae2b-8c0449c32af7",
+  "id": "/providers/Microsoft.Flow/flows/a59fac87-4d84-4754-ae2b-8c0449c32af7",
+  "type": "Microsoft.Flow/flows",
+  "properties": {
+    "apiId": "/providers/Microsoft.PowerApps/apis/shared_logicflows",
+    "displayName": "Get all Yammer messages from a group",
+    "definition": {
+      "metadata": {
+        "workflowEntityId": null,
+        "processAdvisorMetadata": null,
+        "flowChargedByPaygo": null,
+        "flowclientsuspensionreason": "None",
+        "flowclientsuspensiontime": null,
+        "flowclientsuspensionreasondetails": null,
+        "creator": {
+          "id": "1ea748a0-7f66-4b35-bcba-3aeb443ddd21",
+          "type": "User",
+          "tenantId": "76de2213-bb0f-4525-98c1-2d3a3a687153"
+        },
+        "provisioningMethod": "FromDefinition",
+        "failureAlertSubscription": true,
+        "clientLastModifiedTime": "2025-05-03T11:04:44.0003357Z",
+        "connectionKeySavedTimeKey": "2025-05-03T11:04:44.0003357Z",
+        "creationSource": null
+      },
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "c0c50df6-0654-485b-8c65-ab8d5371b57e"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "title": "GroupId",
+                  "type": "number",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter the id of the group (feedId)",
+                  "x-ms-content-hint": "NUMBER"
+                }
+              },
+              "required": [
+                "number"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Initialize_variable_varAllMessages": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "59fea348-d047-407d-b8ea-58a78d9cbf8b"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varAllMessages",
+                "type": "Array",
+                "value": []
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varNoMoreMessages": {
+          "runAfter": {
+            "Initialize_variable_varAllReferences": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b3f437a0-5cc0-487c-98bc-27e2aad75960"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varNoMoreMessages",
+                "type": "Boolean",
+                "value": "@false"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varLastMessageID": {
+          "runAfter": {
+            "Initialize_variable_varNoMoreMessages": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9aee0c5f-6337-48a1-a126-dba9d385f9f0"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varLastMessageID",
+                "type": "Integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Do_until_varNoMoreEvents_is_True": {
+          "actions": {
+            "Condition_to_check_if_the_messages_array_is_empty": {
+              "actions": {
+                "Set_variable_varNoMoreMessages": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "e9164d80-0910-45dc-a3d3-6fb82cceaf5a"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "varNoMoreMessages",
+                    "value": "@true"
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_messages_in_a_group_(V3)": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "Set_variable_varLastMessageID": {
+                    "runAfter": {
+                      "Set_variable_varAllReferences": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "640aed3f-7921-437b-b6c1-484a1acafe1d"
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "varLastMessageID",
+                      "value": "@last(body('Get_messages_in_a_group_(V3)')?['value']).id"
+                    }
+                  },
+                  "Set_variable_varAllMessages": {
+                    "runAfter": {
+                      "Compose_array_of_references_from_union": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "b2d1fbfe-48e5-4ebf-9483-75084d116646"
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "varAllMessages",
+                      "value": "@outputs('Compose_array_of_messages_from_union')"
+                    }
+                  },
+                  "Compose_array_of_messages_from_union": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "f059b79a-9ada-4b11-81d6-36115df638b1"
+                    },
+                    "type": "Compose",
+                    "inputs": "@union(variables('varAllMessages'), body('Get_messages_in_a_group_(V3)')?['value'])"
+                  },
+                  "Compose_array_of_references_from_union": {
+                    "runAfter": {
+                      "Compose_array_of_messages_from_union": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "c2223ea8-2617-42fb-94d6-c6fa616acf3a"
+                    },
+                    "type": "Compose",
+                    "inputs": "@union(variables('varAllReferences'), body('Get_messages_in_a_group_(V3)')?['references'])"
+                  },
+                  "Set_variable_varAllReferences": {
+                    "runAfter": {
+                      "Set_variable_varAllMessages": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "cecb334b-7211-4e96-a76f-666ee8fe105c"
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "varAllReferences",
+                      "value": "@outputs('Compose_array_of_references_from_union')"
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "equals": [
+                  "@empty(body('Get_messages_in_a_group_(V3)')?['value'])",
+                  "@true"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "da0739b6-d8d2-41ef-af0d-331e113e5b04"
+              },
+              "type": "If"
+            },
+            "Get_messages_in_a_group_(V3)": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "4b0df89e-a6bb-4b96-b74f-4b9363310861",
+                "flowSystemMetadata": {
+                  "swaggerOperationId": "GetMessagesInGroupV3"
+                }
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$connections']['shared_yammer']['connectionId']"
+                  },
+                  "api": {
+                    "runtimeUrl": "https://flow-apim-europe-001-westeurope-01.azure-apim.net/apim/yammer"
+                  }
+                },
+                "method": "get",
+                "path": "/v3/messages/in_group/@{encodeURIComponent(triggerBody()['number'])}.json",
+                "queries": {
+                  "network_id": "780013",
+                  "older_than": "@if(equals(variables('varLastMessageID'), 0), null, variables('varLastMessageID'))"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_varLastMessageID": [
+              "Succeeded"
+            ]
+          },
+          "expression": "@equals(variables('varNoMoreMessages'), true)",
+          "limit": {
+            "timeout": "PT1H"
+          },
+          "metadata": {
+            "operationMetadataId": "9cdef291-3a03-48d3-9ac6-3e03e11c1bb6"
+          },
+          "type": "Until"
+        },
+        "Compose_-_output_messages_array_length": {
+          "runAfter": {
+            "Do_until_varNoMoreEvents_is_True": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9224d7f3-9a29-45d2-92a9-49d2bb6ee16e"
+          },
+          "type": "Compose",
+          "inputs": "@length(variables('varAllMessages'))"
+        },
+        "Initialize_variable_varAllReferences": {
+          "runAfter": {
+            "Initialize_variable_varAllMessages": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ad1aa867-7d2d-473a-b92e-8360f9a1bf6a"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varAllReferences",
+                "type": "array",
+                "value": []
+              }
+            ]
+          }
+        },
+        "Set_variable_varAllMessages_as_output": {
+          "runAfter": {
+            "Compose_varAllMessages_output": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b2d1fbfe-48e5-4ebf-9483-75084d116646"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "varAllMessages",
+            "value": "@outputs('Compose_varAllMessages_output')"
+          }
+        },
+        "Set_variable_varAllReferences_as_output": {
+          "runAfter": {
+            "Compose_varAllReferences_as_output": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b2d1fbfe-48e5-4ebf-9483-75084d116646"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "varAllReferences",
+            "value": "@outputs('Compose_varAllReferences_as_output')"
+          }
+        },
+        "Compose_varAllMessages_output": {
+          "runAfter": {
+            "Compose_-_output_messages_array_length": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bf980dd0-07bf-4787-ad49-f8ee444288ad"
+          },
+          "type": "Compose",
+          "inputs": "@variables('varAllMessages')"
+        },
+        "Compose_varAllReferences_as_output": {
+          "runAfter": {
+            "Set_variable_varAllMessages_as_output": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bf68a3c7-f66b-4597-9c11-3663011e0363"
+          },
+          "type": "Compose",
+          "inputs": "@variables('varAllReferences')"
+        }
+      },
+      "outputs": {}
+    },
+    "connectionReferences": {
+      "shared_yammer": {
+        "connectionName": "shared-yammer-07c2f476-648c-4f8e-a239-63516011fa12",
+        "source": "Invoker",
+        "id": "/providers/Microsoft.PowerApps/apis/shared_yammer",
+        "tier": "NotSpecified",
+        "apiName": "yammer",
+        "isProcessSimpleApiReferenceConversionAlreadyDone": false
+      }
+    },
+    "flowFailureAlertSubscribed": false,
+    "isManaged": false
+  }
+}
