@@ -1,5 +1,9 @@
 {
   "groups": [
-    "Example Group"
+    {
+      "name": "Example Group",
+      "lastMessageId": 12345,
+      "id": 67890
+    }
   ]
 }
