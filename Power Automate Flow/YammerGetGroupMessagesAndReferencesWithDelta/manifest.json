@@ -1,0 +1,54 @@
+{
+  "schema": "1.0",
+  "details": {
+    "displayName": "YammerGetGroupMessagesAndReferencesWithDelta",
+    "description": "https://github.com/FH-Inway/Yammer-Archiver",
+    "createdTime": "2025-06-22T11:19:37.0199913Z",
+    "packageTelemetryId": "0992ff1e-5a80-4c38-8a72-15e261f57510",
+    "creator": "N/A",
+    "sourceEnvironment": ""
+  },
+  "resources": {
+    "03e2547b-8549-45c2-bb9f-2da8c3302455": {
+      "type": "Microsoft.Flow/flows",
+      "suggestedCreationType": "New",
+      "creationType": "Existing, New, Update",
+      "details": {
+        "displayName": "Get delta Yammer messages from a group"
+      },
+      "configurableBy": "User",
+      "hierarchy": "Root",
+      "dependsOn": [
+        "c5167616-33d7-47ef-bac0-a93164c68f8f",
+        "569d1396-5520-448c-864a-80d2fed9c2fa"
+      ]
+    },
+    "c5167616-33d7-47ef-bac0-a93164c68f8f": {
+      "id": "/providers/Microsoft.PowerApps/apis/shared_yammer",
+      "name": "shared_yammer",
+      "type": "Microsoft.PowerApps/apis",
+      "suggestedCreationType": "Existing",
+      "details": {
+        "displayName": "Viva Engage",
+        "iconUri": "https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1690/1.0.1690.3719/yammer/icon.png"
+      },
+      "configurableBy": "System",
+      "hierarchy": "Child",
+      "dependsOn": []
+    },
+    "569d1396-5520-448c-864a-80d2fed9c2fa": {
+      "type": "Microsoft.PowerApps/apis/connections",
+      "suggestedCreationType": "Existing",
+      "creationType": "Existing",
+      "details": {
+        "displayName": "your.email@address.com",
+        "iconUri": "https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1690/1.0.1690.3719/yammer/icon.png"
+      },
+      "configurableBy": "User",
+      "hierarchy": "Child",
+      "dependsOn": [
+        "c5167616-33d7-47ef-bac0-a93164c68f8f"
+      ]
+    }
+  }
+}

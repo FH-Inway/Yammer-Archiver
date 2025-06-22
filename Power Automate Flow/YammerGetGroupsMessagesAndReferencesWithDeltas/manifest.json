@@ -1,0 +1,83 @@
+{
+  "schema": "1.0",
+  "details": {
+    "displayName": "YammerGetGroupsMessagesAndReferencesWithDeltas",
+    "description": "https://github.com/FH-Inway/Yammer-Archiver",
+    "createdTime": "2025-06-22T11:28:26.3720023Z",
+    "packageTelemetryId": "e3317223-bbe2-4191-82a0-bd75c4fd8455",
+    "creator": "N/A",
+    "sourceEnvironment": ""
+  },
+  "resources": {
+    "99727f86-7d08-4895-ab53-43582b5c5406": {
+      "type": "Microsoft.Flow/flows",
+      "suggestedCreationType": "New",
+      "creationType": "Existing, New, Update",
+      "details": {
+        "displayName": "Get delta Yammer messages from groups and save to OneDrive"
+      },
+      "configurableBy": "User",
+      "hierarchy": "Root",
+      "dependsOn": [
+        "c5167616-33d7-47ef-bac0-a93164c68f8f",
+        "569d1396-5520-448c-864a-80d2fed9c2fa",
+        "05711f88-e232-4a54-abf6-e7ffdc096f0d",
+        "59010d9e-dd09-454e-babc-cbe1325cd849"
+      ]
+    },
+    "c5167616-33d7-47ef-bac0-a93164c68f8f": {
+      "id": "/providers/Microsoft.PowerApps/apis/shared_yammer",
+      "name": "shared_yammer",
+      "type": "Microsoft.PowerApps/apis",
+      "suggestedCreationType": "Existing",
+      "details": {
+        "displayName": "Viva Engage",
+        "iconUri": "https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1690/1.0.1690.3719/yammer/icon.png"
+      },
+      "configurableBy": "System",
+      "hierarchy": "Child",
+      "dependsOn": []
+    },
+    "569d1396-5520-448c-864a-80d2fed9c2fa": {
+      "type": "Microsoft.PowerApps/apis/connections",
+      "suggestedCreationType": "Existing",
+      "creationType": "Existing",
+      "details": {
+        "displayName": "florian.hopfner@inway.de",
+        "iconUri": "https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1690/1.0.1690.3719/yammer/icon.png"
+      },
+      "configurableBy": "User",
+      "hierarchy": "Child",
+      "dependsOn": [
+        "c5167616-33d7-47ef-bac0-a93164c68f8f"
+      ]
+    },
+    "05711f88-e232-4a54-abf6-e7ffdc096f0d": {
+      "id": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+      "name": "shared_onedriveforbusiness",
+      "type": "Microsoft.PowerApps/apis",
+      "suggestedCreationType": "Existing",
+      "details": {
+        "displayName": "OneDrive for Business",
+        "iconUri": "https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1732/1.0.1732.4070/onedriveforbusiness/icon.png"
+      },
+      "configurableBy": "System",
+      "hierarchy": "Child",
+      "dependsOn": []
+    },
+    "59010d9e-dd09-454e-babc-cbe1325cd849": {
+      "type": "Microsoft.PowerApps/apis/connections",
+      "suggestedCreationType": "Existing",
+      "creationType": "Existing",
+      "details": {
+        "displayName": "your.email@address.com",
+        "iconUri": "https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1732/1.0.1732.4070/onedriveforbusiness/icon.png"
+      },
+      "configurableBy": "User",
+      "hierarchy": "Child",
+      "dependsOn": [
+        "05711f88-e232-4a54-abf6-e7ffdc096f0d"
+      ]
+    }
+  }
+}

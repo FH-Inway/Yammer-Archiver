@@ -1,0 +1,666 @@
+{
+  "name": "87761a3b-ee64-4dbb-aa6e-cbd5e58f5c92",
+  "id": "/providers/Microsoft.Flow/flows/87761a3b-ee64-4dbb-aa6e-cbd5e58f5c92",
+  "type": "Microsoft.Flow/flows",
+  "properties": {
+    "apiId": "/providers/Microsoft.PowerApps/apis/shared_logicflows",
+    "displayName": "Get delta Yammer messages from groups and save to OneDrive",
+    "definition": {
+      "metadata": {
+        "workflowEntityId": null,
+        "processAdvisorMetadata": null,
+        "flowChargedByPaygo": null,
+        "flowclientsuspensionreason": "None",
+        "flowclientsuspensiontime": null,
+        "flowclientsuspensionreasondetails": null,
+        "creator": {
+          "id": "1ea748a0-7f66-4b35-bcba-3aeb443ddd21",
+          "type": "User",
+          "tenantId": "76de2213-bb0f-4525-98c1-2d3a3a687153"
+        },
+        "provisioningMethod": "FromDefinition",
+        "failureAlertSubscription": true,
+        "clientLastModifiedTime": "2025-06-15T16:58:00.8575727Z",
+        "connectionKeySavedTimeKey": "2025-06-15T16:58:00.8575727Z",
+        "creationSource": null,
+        "modifiedSources": "Portal"
+      },
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "undefined",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "Please enter a JSON with groups and last message id",
+                  "title": "JSON groups and last message id",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Parse_JSON": {
+          "runAfter": {},
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@triggerBody()?['text']",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "groups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "lastMessageId": {
+                        "type": "integer"
+                      },
+                      "id": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "lastMessageId",
+                      "id"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@body('Parse_JSON')?['groups']",
+          "actions": {
+            "Set_variable_varNewerThanMessageId": {
+              "runAfter": {
+                "Reset_variable_varCurrentLoop": [
+                  "Succeeded"
+                ]
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "varNewerThanMessageId",
+                "value": "@items('Apply_to_each').lastMessageId"
+              }
+            },
+            "Do_until": {
+              "actions": {
+                "Condition_to_check_if_the_messages_array_is_empty": {
+                  "actions": {
+                    "Set_variable_varNoMoreMessages": {
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "varNoMoreMessages",
+                        "value": true
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Increment_variable_varCurrentLoop": [
+                      "Succeeded"
+                    ]
+                  },
+                  "else": {
+                    "actions": {
+                      "Set_variable_varLastMessageId": {
+                        "runAfter": {
+                          "Set_variable_varAllReferences": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "varLastMessageId",
+                          "value": "@last(variables('varCurrentMessages')).id"
+                        }
+                      },
+                      "Compose_array_of_messages_from_union": {
+                        "type": "Compose",
+                        "inputs": "@union(variables('varAllMessages'), variables('varCurrentMessages'))"
+                      },
+                      "Compose_array_of_references_from_union": {
+                        "runAfter": {
+                          "Compose_array_of_messages_from_union": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "Compose",
+                        "inputs": "@union(variables('varAllReferences'), variables('varCurrentReferences'))"
+                      },
+                      "Set_variable_varAllMessages": {
+                        "runAfter": {
+                          "Compose_array_of_references_from_union": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "varAllMessages",
+                          "value": "@outputs('Compose_array_of_messages_from_union')"
+                        }
+                      },
+                      "Set_variable_varAllReferences": {
+                        "runAfter": {
+                          "Set_variable_varAllMessages": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "varAllReferences",
+                          "value": "@outputs('Compose_array_of_references_from_union')"
+                        }
+                      }
+                    }
+                  },
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@empty(variables('varCurrentMessages'))",
+                          "@true"
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "If"
+                },
+                "Increment_variable_varCurrentLoop": {
+                  "runAfter": {
+                    "Condition_to_check_if_varLastMessageId_is_still_0": [
+                      "Succeeded",
+                      "Failed"
+                    ]
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "varCurrentLoop",
+                    "value": 1
+                  }
+                },
+                "Condition_to_check_if_varLastMessageId_is_still_0": {
+                  "actions": {
+                    "Get_messages_in_a_group_(V3)_without_varLastMessageId": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "group_id": "@items('Apply_to_each').id",
+                          "network_id": "780013",
+                          "newer_than": "@variables('varNewerThanMessageId')"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_yammer",
+                          "connectionName": "shared_yammer",
+                          "operationId": "GetMessagesInGroupV3"
+                        },
+                        "authentication": {
+                          "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+                          "type": "Raw"
+                        }
+                      }
+                    },
+                    "Set_variable_varCurrentMessages_without_varLastMessageId": {
+                      "runAfter": {
+                        "Get_messages_in_a_group_(V3)_without_varLastMessageId": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "varCurrentMessages",
+                        "value": "@body('Get_messages_in_a_group_(V3)_without_varLastMessageId')?['value']"
+                      }
+                    },
+                    "Set_variable_varCurrentReferences_without_varLastMessageId": {
+                      "runAfter": {
+                        "Set_variable_varCurrentMessages_without_varLastMessageId": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "varCurrentReferences",
+                        "value": "@body('Get_messages_in_a_group_(V3)_without_varLastMessageId')?['references']"
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Reset_variable_varCurrentReferences": [
+                      "Succeeded"
+                    ]
+                  },
+                  "else": {
+                    "actions": {
+                      "Get_messages_in_a_group_(V3)_with_varLastMessageId": {
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "group_id": "@items('Apply_to_each').id",
+                            "network_id": "780013",
+                            "older_than": "@variables('varLastMessageId')",
+                            "newer_than": "@variables('varNewerThanMessageId')"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_yammer",
+                            "connectionName": "shared_yammer",
+                            "operationId": "GetMessagesInGroupV3"
+                          },
+                          "authentication": {
+                            "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+                            "type": "Raw"
+                          }
+                        }
+                      },
+                      "Set_variable_varCurrentMessages_with_varLastMessageId": {
+                        "runAfter": {
+                          "Get_messages_in_a_group_(V3)_with_varLastMessageId": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "varCurrentMessages",
+                          "value": "@body('Get_messages_in_a_group_(V3)_with_varLastMessageId')?['value']"
+                        }
+                      },
+                      "Set_variable_varCurrentReferences_with_varLastMessageId": {
+                        "runAfter": {
+                          "Set_variable_varCurrentMessages_with_varLastMessageId": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "SetVariable",
+                        "inputs": {
+                          "name": "varCurrentReferences",
+                          "value": "@body('Get_messages_in_a_group_(V3)_with_varLastMessageId')?['references']"
+                        }
+                      }
+                    }
+                  },
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@variables('varLastMessageId')",
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "If"
+                },
+                "Reset_variable_varCurrentMessages": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "varCurrentMessages",
+                    "value": []
+                  }
+                },
+                "Reset_variable_varCurrentReferences": {
+                  "runAfter": {
+                    "Reset_variable_varCurrentMessages": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "varCurrentReferences",
+                    "value": []
+                  }
+                }
+              },
+              "runAfter": {
+                "Set_variable_varNewerThanMessageId": [
+                  "Succeeded"
+                ]
+              },
+              "expression": "@or(equals(variables('varNoMoreMessages'), true), equals(variables('varCurrentLoop'), variables('varMaxLoop')))",
+              "limit": {
+                "count": 60,
+                "timeout": "PT1H"
+              },
+              "type": "Until"
+            },
+            "Compose_varAllMessages_output": {
+              "runAfter": {
+                "Do_until": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@variables('varAllMessages')"
+            },
+            "Compose_varAllReferences_output": {
+              "runAfter": {
+                "Compose_varAllMessages_output": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@variables('varAllReferences')"
+            },
+            "Create_messages_file": {
+              "runAfter": {
+                "Compose_varAllReferences_output": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "folderPath": "@concat('/YammerArchive/', item()?['name'])",
+                  "name": "@concat(item()?['name'], ' Messages ', item()?['lastMessageId'],'.json')",
+                  "body": "@outputs('Compose_varAllMessages_output')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+                  "connectionName": "shared_onedriveforbusiness",
+                  "operationId": "CreateFile"
+                },
+                "authentication": {
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+                  "type": "Raw"
+                }
+              },
+              "runtimeConfiguration": {
+                "contentTransfer": {
+                  "transferMode": "Chunked"
+                }
+              }
+            },
+            "Create_references_file": {
+              "runAfter": {
+                "Create_messages_file": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "folderPath": "@concat('/YammerArchive/', item()?['name'])",
+                  "name": "@concat(item()?['name'], ' References ', item()?['lastMessageId'],'.json')",
+                  "body": "@outputs('Compose_varAllReferences_output')"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+                  "connectionName": "shared_onedriveforbusiness",
+                  "operationId": "CreateFile"
+                },
+                "authentication": {
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+                  "type": "Raw"
+                }
+              },
+              "runtimeConfiguration": {
+                "contentTransfer": {
+                  "transferMode": "Chunked"
+                }
+              }
+            },
+            "Reset_variable_varAllMessages": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "varAllMessages",
+                "value": []
+              }
+            },
+            "Reset_variable_varAllReferences": {
+              "runAfter": {
+                "Reset_variable_varAllMessages": [
+                  "Succeeded"
+                ]
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "varAllReferences",
+                "value": []
+              }
+            },
+            "Reset_variable_varNoMoreMessages": {
+              "runAfter": {
+                "Reset_variable_varAllReferences": [
+                  "Succeeded"
+                ]
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "varNoMoreMessages",
+                "value": false
+              }
+            },
+            "Reset_variable_varLastMessageId": {
+              "runAfter": {
+                "Reset_variable_varNoMoreMessages": [
+                  "Succeeded"
+                ]
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "varLastMessageId",
+                "value": 0
+              }
+            },
+            "Reset_variable_varCurrentLoop": {
+              "runAfter": {
+                "Reset_variable_varLastMessageId": [
+                  "Succeeded"
+                ]
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "varCurrentLoop",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_varCurrentReferences": [
+              "Succeeded"
+            ]
+          },
+          "type": "Foreach"
+        },
+        "Initialize_variable_varAllMessages": {
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varAllMessages",
+                "type": "array",
+                "value": []
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varAllReferences": {
+          "runAfter": {
+            "Initialize_variable_varAllMessages": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varAllReferences",
+                "type": "array",
+                "value": []
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varNoMoreMessages": {
+          "runAfter": {
+            "Initialize_variable_varAllReferences": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varNoMoreMessages",
+                "type": "boolean",
+                "value": false
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varLastMessageId": {
+          "runAfter": {
+            "Initialize_variable_varNoMoreMessages": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varLastMessageId",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varNewerThanMessageId": {
+          "runAfter": {
+            "Initialize_variable_varLastMessageId": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varNewerThanMessageId",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varMaxLoop": {
+          "runAfter": {
+            "Initialize_variable_varNewerThanMessageId": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varMaxLoop",
+                "type": "integer",
+                "value": 999999
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varCurrentLoop": {
+          "runAfter": {
+            "Initialize_variable_varMaxLoop": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varCurrentLoop",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varCurrentMessages": {
+          "runAfter": {
+            "Initialize_variable_varCurrentLoop": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varCurrentMessages",
+                "type": "array",
+                "value": []
+              }
+            ]
+          }
+        },
+        "Initialize_variable_varCurrentReferences": {
+          "runAfter": {
+            "Initialize_variable_varCurrentMessages": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varCurrentReferences",
+                "type": "array",
+                "value": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    "connectionReferences": {
+      "shared_yammer": {
+        "connectionName": "shared-yammer-07c2f476-648c-4f8e-a239-63516011fa12",
+        "source": "Invoker",
+        "id": "/providers/Microsoft.PowerApps/apis/shared_yammer",
+        "tier": "NotSpecified",
+        "apiName": "yammer",
+        "isProcessSimpleApiReferenceConversionAlreadyDone": false
+      },
+      "shared_onedriveforbusiness": {
+        "connectionName": "shared-onedriveforbu-7d520e46-d206-415a-9b71-2b4c7102dde9",
+        "source": "Invoker",
+        "id": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+        "tier": "NotSpecified",
+        "apiName": "onedriveforbusiness",
+        "isProcessSimpleApiReferenceConversionAlreadyDone": false
+      }
+    },
+    "flowFailureAlertSubscribed": false,
+    "isManaged": false
+  }
+}
