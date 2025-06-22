@@ -43,9 +43,9 @@ body {
 
 /* Sidebar navigation styles */
 #sidebar {
-  width: 250px;
+  width: 350px;
   background-color: var(--sidebar-bg);
-  padding: 20px 0;
+  padding: 0px 0;
   border-right: 1px solid var(--sidebar-border);
   overflow-y: auto;
   flex-shrink: 0;
@@ -55,7 +55,7 @@ body {
 }
 
 #sidebar h2 {
-  padding: 0 20px;
+  padding: 20px 20px 0px;
   margin-top: 0;
 }
 
@@ -74,6 +74,49 @@ body {
   background-color: var(--nav-active);
   border-left-color: var(--nav-active-border);
   font-weight: bold;
+}
+
+/* Sticky header in sidebar */
+#sidebar .sidebar-header {
+  position: sticky;
+  top: 0;
+  background-color: var(--sidebar-bg);
+  z-index: 20;
+  padding: 0 20px 10px 20px;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+/* Group filter input styles */
+.group-filter-wrapper {
+  position: relative;
+}
+#group-filter {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 32px 8px 12px; /* Add right padding for the clear button */
+  border: 1px solid var(--sidebar-border);
+  border-radius: 4px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 1em;
+  box-sizing: border-box;
+}
+#clear-group-filter {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  color: var(--text-color);
+  cursor: pointer;
+  display: none;
+  padding: 0;
+  line-height: 1;
+}
+#clear-group-filter.visible {
+  display: block;
 }
 
 /* Main content styles */

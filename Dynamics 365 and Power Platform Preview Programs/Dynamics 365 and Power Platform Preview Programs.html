@@ -17,7 +17,13 @@
 
   <!-- Sidebar Navigation -->
   <div id="sidebar">
-    <h2>Groups</h2>
+    <div class="sidebar-header">
+      <h2>Groups</h2>
+      <div class="group-filter-wrapper" style="position: relative;">
+        <input type="text" id="group-filter" placeholder="Filter groups..." autocomplete="off">
+        <button id="clear-group-filter" title="Clear filter">×</button>
+      </div>
+    </div>
     <div id="group-nav">
       <p id="nav-loading">Loading groups...</p>
     </div>

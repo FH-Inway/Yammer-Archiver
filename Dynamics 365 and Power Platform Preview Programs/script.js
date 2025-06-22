@@ -1,6 +1,7 @@
 // Available groups will be populated at runtime
 const availableGroups = [];
 let currentGroup = '';
+let groupConfig = [];
 
 // Search functionality
 let searchResults = [];
@@ -38,6 +39,28 @@ window.addEventListener('DOMContentLoaded', async () => {
     highlightActiveGroup(currentGroup);
     loadMessages(currentGroup);
   }
+  
+  // Set up group filter functionality
+  const groupFilter = document.getElementById('group-filter');
+  const clearGroupFilter = document.getElementById('clear-group-filter');
+  if (groupFilter) {
+    groupFilter.addEventListener('input', () => {
+      renderGroupNav();
+      if (groupFilter.value) {
+        clearGroupFilter.classList.add('visible');
+      } else {
+        clearGroupFilter.classList.remove('visible');
+      }
+    });
+    if (clearGroupFilter) {
+      clearGroupFilter.addEventListener('click', () => {
+        groupFilter.value = '';
+        clearGroupFilter.classList.remove('visible');
+        renderGroupNav();
+        groupFilter.focus();
+      });
+    }
+  }
 });
 
 // Theme management functions
@@ -62,7 +85,8 @@ async function loadAvailableGroups() {
     if (configResponse.ok) {
       const config = await configResponse.json();
       if (Array.isArray(config.groups)) {
-        availableGroups.push(...config.groups);
+        groupConfig = config.groups;
+        availableGroups.push(...config.groups.map(g => g.name));
       }
     }
     
@@ -76,38 +100,42 @@ async function loadAvailableGroups() {
     availableGroups.sort();
     
     // Populate sidebar navigation
-    const navElement = document.getElementById('group-nav');
-    navElement.innerHTML = '';
-    
-    if (availableGroups.length === 0) {
-      navElement.innerHTML = '<p class="error">No groups found</p>';
-      return;
-    }
-    
-    // Add each group as a nav item
-    availableGroups.forEach(group => {
-      const navItem = document.createElement('div');
-      navItem.classList.add('nav-item');
-      navItem.textContent = group;
-      navItem.dataset.group = group;
-      navItem.addEventListener('click', () => {
-        currentGroup = group;
-        
-        // Update URL without reloading the page
-        const url = new URL(window.location);
-        url.searchParams.set('group', currentGroup);
-        window.history.pushState({}, '', url);
-        
-        // Update UI
-        highlightActiveGroup(currentGroup);
-        loadMessages(currentGroup);
-      });
-      navElement.appendChild(navItem);
-    });
+    renderGroupNav();
   } catch (error) {
     console.error('Error loading available groups:', error);
     document.getElementById('nav-loading').textContent = 'Error loading groups';
   }
+}
+
+// Render the group navigation, applying filter if present
+function renderGroupNav() {
+  const navElement = document.getElementById('group-nav');
+  navElement.innerHTML = '';
+  const filterValue = (document.getElementById('group-filter')?.value || '').toLowerCase();
+  let filteredGroups = groupConfig;
+  if (filterValue) {
+    filteredGroups = groupConfig.filter(g => g.name.toLowerCase().includes(filterValue));
+  }
+  if (!filteredGroups.length) {
+    navElement.innerHTML = '<p class="error">No groups found</p>';
+    return;
+  }
+  filteredGroups.forEach(groupObj => {
+    const group = groupObj.name;
+    const navItem = document.createElement('div');
+    navItem.classList.add('nav-item');
+    navItem.textContent = group;
+    navItem.dataset.group = group;
+    navItem.addEventListener('click', () => {
+      currentGroup = group;
+      const url = new URL(window.location);
+      url.searchParams.set('group', currentGroup);
+      window.history.pushState({}, '', url);
+      highlightActiveGroup(currentGroup);
+      loadMessages(currentGroup);
+    });
+    navElement.appendChild(navItem);
+  });
 }
 
 // Function to highlight the active group in the sidebar
