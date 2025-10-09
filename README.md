@@ -29,9 +29,9 @@ There are three different Power Automate flows:
 
 ```json
 {
-  "groupName": "Example group",
-  "groupId": "1234567890",
-  "lastMessageId": "0"
+  "name": "Example group",
+  "lastMessageId": 0,
+  "id": 1234567890
 }
 ```
 11. Open the `Dynamics 365 and Power Platform Preview Programs.html` file with a http server (e.g. using the Visual Studio Code [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension).
@@ -53,18 +53,40 @@ During import of this flow, you will be asked to authenticate with OneDrive to s
 The schema for the JSON array is the same as for the `groups-config.json` file.
 
 ```json
-[
+{
+  "groups": [
   {
-    "groupName": "Example group",
-    "groupId": "12345",
-    "lastMessageId": "67890"
+    "name": "Unified Admin and Developer Experiences",
+    "lastMessageId": 0,
+    "id": 126835908608
   },
   {
-    "groupName": "Another group",
-    "groupId": "987654321",
-    "lastMessageId": "0"
+    "name": "D365FO Application and Platform Updates",
+    "lastMessageId": 0,
+    "id": 12810652
+  },
+  {
+    "name": "Data archive with Dataverse long term retention",
+    "lastMessageId": 0,
+    "id": 69826658304
+  },
+  {
+    "name": "Preview Early Access",
+    "lastMessageId": 0,
+    "id": 12792233
+  },
+  {
+    "name": "Synapse Link for Dynamics",
+    "lastMessageId": 0,
+    "id": 32768909312
+  },
+  {
+    "name": "Regression Suite Automation Tool Preview",
+    "lastMessageId": 0,
+    "id": 15284202
   }
-]
+  ]
+}
 ```
 
 The files stored in OneDrive will have the same naming convention as described in the previous flows, with the group name followed by `Messages` or `References`. In addition, the `lastMessageId` from the JSON array is included at the end of the file name.
