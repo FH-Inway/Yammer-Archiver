@@ -2,7 +2,9 @@
 
 This is a prototype for archiving Yammer/Viva Engage messages in a group.
 
-It uses the Microsoft Power Automate connector for Viva Engage and its [Get messages in a group (V3)](https://learn.microsoft.com/en-us/connectors/yammer/#get-messages-in-a-group-(v3)) action to retrieve messages from a specified group. The resulting data can be downloaded as JSON files and viewed with the `Dynamics 365 and Power Platform Preview Programs.html` file.
+It uses the Microsoft Power Automate connector for Viva Engage and its [Get messages in a group (V3)](https://learn.microsoft.com/en-us/connectors/yammer/#get-messages-in-a-group-(v3)) action to retrieve messages from a specified group. The resulting data can be downloaded as JSON files.
+
+The files can then either be converted to a markdown file with the `Export-GroupConversationHistory.ps1` PowerShell script or viewed with the `Dynamics 365 and Power Platform Preview Programs.html` file.
 
 The prototype is based on the article [How to get all messages in a Yammer group using Microsoft Flow](https://alextofan.com/2019/03/18/how-to-get-all-messages-in-a-yammer-group-using-microsoft-flow/).
 
@@ -74,3 +76,18 @@ The files stored in OneDrive will have the same naming convention as described i
 To use those files in the `Dynamics 365 and Power Platform Preview Programs.html` file, you need to copy the files from OneDrive to the group folders next to the `Example group` folder. They need to be merged with any existing files or transformed in case no files from previous runs exist. This is done with the [Merge-GroupJsonFiles.ps1](Merge-GroupJsonFiles.ps1) PowerShell script. 
 
 After the merge, the [Update-LatestMessageId.ps1](Update-LatestMessageId.ps1) PowerShell script can be used to update the `lastMessageId` in the `groups-config.json` file.
+
+## 📄 Export to Markdown
+
+Use the `Export-GroupConversationHistory.ps1` PowerShell script to export group conversations to markdown format:
+
+```powershell
+.\Export-GroupConversationHistory.ps1 -GroupName "Example Group" -OutputPath ".\makrdown\example-group.md"
+```
+
+The script will:
+- Load messages and user references from the JSON files
+- Build conversation threads and replies hierarchy 
+- Generate a formatted markdown file with user names, dates, and threaded conversations
+
+The markdown file can then be viewed in any text editor or a dedicated markdown editor/viewer.
