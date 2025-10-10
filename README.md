@@ -55,36 +55,16 @@ The schema for the JSON array is the same as for the `groups-config.json` file.
 ```json
 {
   "groups": [
-  {
-    "name": "Unified Admin and Developer Experiences",
-    "lastMessageId": 0,
-    "id": 126835908608
-  },
-  {
-    "name": "D365FO Application and Platform Updates",
-    "lastMessageId": 0,
-    "id": 12810652
-  },
-  {
-    "name": "Data archive with Dataverse long term retention",
-    "lastMessageId": 0,
-    "id": 69826658304
-  },
-  {
-    "name": "Preview Early Access",
-    "lastMessageId": 0,
-    "id": 12792233
-  },
-  {
-    "name": "Synapse Link for Dynamics",
-    "lastMessageId": 0,
-    "id": 32768909312
-  },
-  {
-    "name": "Regression Suite Automation Tool Preview",
-    "lastMessageId": 0,
-    "id": 15284202
-  }
+    {
+      "name": "Example group",
+      "lastMessageId": 0,
+      "id": 1234567890
+    },
+    {
+      "groupName": "Another group",
+      "groupId": "987654321",
+      "lastMessageId": "0"
+    }
   ]
 }
 ```
